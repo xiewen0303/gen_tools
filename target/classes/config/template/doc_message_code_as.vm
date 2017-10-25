@@ -1,4 +1,0 @@
-Number	Name	Class	Comment	
-#foreach ($data in $codeSet)
-${data.codeValue}	${data.codeKey}	${data.clzName}	${data.comment}
-#end
