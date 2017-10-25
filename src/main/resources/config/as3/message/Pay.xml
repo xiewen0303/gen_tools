@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<controllers >
+<controller type="PayCtl" packageServer="com.benniu.game.service.pay" packageClient="ghostcoming.protocol" moduleName="pay" comment="充值" >
+	
+	<message id="CS_PAY_DATA" type="CSPayData" method="getPayData" comment="获取充值数据">
+		<property id="payId" type="int" comment="充值Id" />
+	</message>
+
+	<message id="SC_PAY_DATA" type="SCPayData" method="" comment="获取充值数据" >
+		<property id="flagCode" type="int" comment="提示信息" />
+	 	<property id="data" type="String" comment="充值数据" />
+	</message>
+	
+	
+	<message id="CS_VERIFY_PAY" type="CSVerifyPay" method="verifyPay" comment="确认是否已经成功充值">
+		<property id="gameOrderno" type="String" comment="游戏订单" />
+	</message>
+
+	<message id="SC_VERIFY_PAY" type="SCVerifyPay" method="" comment="确认是否已经成功充值" >
+		<property id="flagCode" type="int" comment="提示信息" />
+	</message>
+	
+	<message id="CS_OPEN_PAY" type="CSOpenPay" method="openPay" comment="打开充值面板">
+	</message>
+	
+	<message id="SC_OPEN_PAY" type="SCOpenPay" method="" comment="打开充值面板" >
+		<array id="ids" type="int" comment="充值数组" />
+		<array id="firstIds" type="int" comment="已经首充过的Id" />
+	</message>
+	 
+</controller>
+</controllers>

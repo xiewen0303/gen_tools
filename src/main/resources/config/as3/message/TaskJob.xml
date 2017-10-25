@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<controllers >
+<controller type="TaskJobCtl" packageServer="com.benniu.game.service.taskjob" packageClient="ghostcoming.protocol" moduleName="taskjob" comment="引导任务" >
+	
+	<message id="CS_PASS_GUIDES" type="CSPassGuides" method="getPassGuides" comment="已通过的引导">
+	</message>
+	
+	<message id="SC_PASS_GUIDES" type="SCPassGuides" method="getPassGuides" comment="已通过的引导">
+		<array id="passGuides" type="int"   comment="新手任务id" />
+	</message>
+	
+	<message id="CS_FINISH_GUIDES" type="CSFinishGuides" method="finishGuide" comment="完成某单个引导">
+		<property id="guideId" type="int" comment="引导Id" />
+	</message>
+	
+	
+	
+	<message id="CS_OPEN_SIGN" type="CSOpenSign" method="openSign" comment="打开签到">	
+	</message>
+	
+	<message id="SC_OPEN_SIGN" type="SCOpenSign" method="" comment="打开签到">
+		<property id="signDay" type="int"   comment="已经签到的天数,当为false时：可签到signDay+1天； 当为true时:标识已经签到了signDay天（最大可以签到7天）" />
+		<property id="signFlag" type="boolean"   comment="今天是否已签到,true:标识今天已经签到了，false：标识今天还没签到" />
+	</message>
+	
+	<message id="CS_SIGN" type="CSSign" method="sign" comment="签到">	
+		<property id="day" type="byte"   comment="签到天数" />
+	</message>
+	
+	<message id="SC_SIGN" type="SCSign" method="" comment="签到">
+		<property id="flagCode" type="int"   comment="提示信息" />
+	</message>
+	
+	
+	<message id="CS_PUBLIC_NOTICE" type="CSPublicNotice" method="publicNotice" comment="公告">	
+	</message>
+	
+	<message id="SC_PUBLIC_NOTICE" type="SCPublicNotice" method="" comment="公告">
+			<property id="content" type="String"   comment="提示信息" />
+			<property id="name" type="String"   comment="公告源名字" />
+			<property id="date" type="String"   comment="时间" />
+	</message>
+  
+	<message id="CS_TASK_INFO" type="CSTaskInfo" method="taskInfo" comment="任务信息">	
+	</message>
+	
+	<message id="SC_TASK_INFO" type="SCTaskInfo" method="" comment="任务信息">
+			<property id="id" type="int"   comment="任务Id" />
+			<property id="state" type="int"   comment="状态  0:没完成,1:已完成,2:已领取" />
+			<property id="data" type="int"   comment="进度数据" />
+	</message>
+	
+	<message id="CS_GET_TASK" type="CSGetTask" method="getTask" comment="领取任务">	
+	</message>
+	
+	<message id="SC_GET_TASK" type="SCGetTask" method="" comment="任务信息">
+		<property id="flagCode" type="int"   comment="提示信息" />
+		<property id="nextTaskId" type="int"   comment="获取的下一个任务Id(如果为0表示没有任务)" />
+	</message>
+	
+</controller>
+</controllers>

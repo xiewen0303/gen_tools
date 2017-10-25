@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<controllers >
+<controller type="LoginCtl" packageServer="com.benniu.game.service.login" packageClient="ghostcoming.protocol" moduleName="login" comment="玩家登录" >
+	
+
+
+	<message id="CS_PLAYER_LOGIN" type="CSPlayerLogin" method="login" comment="登录协议" >
+		<property id="providerData" type="String" comment="平台登录数据" />
+	</message>
+	
+	<message id="SC_PLAYER_LOGIN" type="SCPlayerLogin" method="" comment="登录协议" >
+		<property id="flagCode" type="int" comment="提示信息" />
+		<property id="sign" type="String" comment="验签" />
+		<property id="flagLocation" type="byte" comment="标示登录进入那个界面(0:默认在主城, 1:在地图里面,2:需要取名字,3:精英副本)" />
+	</message>
+
+
+	<message id="CS_LOGIN_TEST" type="CSLoginTest" method="testLogin" comment="登录协议(测试)" >
+		<property id="loginName" type="String" comment="登录名" />
+	</message>
+	
+	<message id="SC_LOGIN_TEST" type="SCLoginTest" method="" comment="登录协议(测试)" >
+		<property id="flag" type="boolean" comment="是否成功" /> 
+		<property id="errorCode" type="int" comment="错误码" /> 
+		<property id="sign" type="String" comment="标示" />
+		<property id="flagLocation" type="byte" comment="标示登录进入那个界面(0:默认在主城, 1:在地图里面,2:需要取名字)" />
+	</message>
+	
+	<message id="SC_OFFLINE" type="SCOffline" method="" comment="玩家离线通知消息" >
+		<property id="flag" type="int" comment="1:离线，2：被挤号" />
+	</message>
+	 
+	<message id="CS_GM_CMD" type="CSGmCmdTest" method="gmCmd" comment="测试gm命令" >
+		<property id="cmdStr" type="String" comment="命令" />
+	</message>
+	
+	<message id="CS_RE_LOGIN" type="CSReLogin" method="reLogin" comment="重连" >
+		<property id="sign" type="String" comment="验证数据" />
+	</message>
+	
+</controller>
+</controllers>

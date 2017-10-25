@@ -1,0 +1,4 @@
+#cmd for modulename
+#foreach( $message in $codeSet )
+$message.codeValue=$message.moduleName
+#end

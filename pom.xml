@@ -1,0 +1,298 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.wind.tools</groupId>
+  <artifactId>gen_tools</artifactId>
+  <packaging>jar</packaging>
+  <version>releases</version>
+  <name>gen_tools</name>
+  <url>http://maven.apache.org</url>
+  
+  <properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+  
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+    
+ 	<dependency>
+    <groupId>c3p0</groupId>
+    <artifactId>c3p0</artifactId>
+    <version>0.9.0.4</version>
+	</dependency>
+    
+    <dependency>
+    <groupId>commons-collections</groupId>
+    <artifactId>commons-collections</artifactId>
+    <version>3.2.1</version>
+	</dependency>
+	
+	<dependency>
+    <groupId>commons-lang</groupId>
+    <artifactId>commons-lang</artifactId>
+    <version>2.5</version>
+	</dependency>
+	
+	<dependency>
+    <groupId>dom4j</groupId>
+    <artifactId>dom4j</artifactId>
+    <version>1.6.1</version>
+	</dependency>
+	
+	<dependency>
+    <groupId>com.alibaba</groupId>
+    <artifactId>fastjson</artifactId>
+    <version>1.2.39</version>
+	</dependency>
+	
+	<dependency>
+    <groupId>jdom</groupId>
+    <artifactId>jdom</artifactId>
+    <version>1.0</version>
+	</dependency>
+	
+	<dependency>
+    <groupId>net.sourceforge.jexcelapi</groupId>
+    <artifactId>jxl</artifactId>
+    <version>2.6.12</version>
+	</dependency>
+	
+	<dependency>
+    <groupId>log4j</groupId>
+    <artifactId>log4j</artifactId>
+    <version>1.2.14</version>
+	</dependency>
+	
+	
+	<dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>5.1.5</version>
+	</dependency>
+	
+	
+	<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi</artifactId>
+    <version>3.13</version>
+	</dependency>
+	
+	<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml</artifactId>
+    <version>3.13</version>
+	</dependency>
+
+	<dependency>
+	    <groupId>org.apache.poi</groupId>
+	    <artifactId>poi-ooxml-schemas</artifactId>
+	    <version>3.13</version>
+	</dependency>
+
+	<dependency>
+	    <groupId>org.apache.velocity</groupId>
+	    <artifactId>velocity</artifactId>
+	    <version>1.7</version>
+	</dependency>
+		 
+	<dependency>
+	    <groupId>org.apache.xmlbeans</groupId>
+	    <artifactId>xmlbeans</artifactId>
+	    <version>2.6.0</version>
+	</dependency>
+  </dependencies>
+  
+  
+  <build>
+  	<pluginManagement>  
+            <plugins>  
+                <plugin>  
+                    <groupId>org.eclipse.m2e</groupId>  
+                    <artifactId>lifecycle-mapping</artifactId>  
+                    <version>1.0.0</version>  
+                    <configuration>  
+                        <lifecycleMappingMetadata>  
+                            <pluginExecutions>  
+                                <pluginExecution>  
+                                    <pluginExecutionFilter>  
+                                        <groupId>org.apache.maven.plugins</groupId>  
+                                        <artifactId>maven-dependency-plugin</artifactId>  
+                                        <versionRange>[2.0,)</versionRange>  
+                                        <goals>  
+                                            <goal>copy-dependencies</goal>  
+                                        </goals>  
+                                    </pluginExecutionFilter>  
+                                    <action>  
+                                        <ignore />  
+                                    </action>  
+                                </pluginExecution>  
+                            </pluginExecutions>  
+                        </lifecycleMappingMetadata>  
+                    </configuration>  
+                </plugin>  
+            </plugins>  
+        </pluginManagement>
+  
+  
+  	<sourceDirectory>src/main/java</sourceDirectory>
+  	
+  	<resources>
+  		<!-- copy config resource -->
+  		<resource>
+  			<directory>src/main/resources</directory>
+  			<targetPath>${project.build.directory}/classes</targetPath>
+  		</resource>
+  		
+  		<!-- 把lib目录下所有的文件拷贝到lib目录中 （自己定义的jar,需要放在lib目录中） -->
+        <resource>
+            <directory>lib</directory>
+            <targetPath>${project.build.directory}/lib</targetPath>
+        </resource>
+  		
+  		<!-- 把放在根目录下的脚本文件.sh,.bat拷贝到bin目录中 -->
+        <resource>
+            <directory>shell</directory>
+			<includes>
+                <include>*.sh</include>
+                <include>*.bat</include>
+            </includes>
+            <targetPath>${project.build.directory}/shell</targetPath>
+        </resource>
+  	</resources>
+  	
+  	<plugins>
+  	 	<!-- 用于编译的plugin -->
+  	 	<plugin>
+  	 		<groupId>org.apache.maven.plugins</groupId>
+  	 		<artifactId>maven-compiler-plugin</artifactId>
+  	 		<version>3.1</version>
+  	 		<configuration>
+              	<fork>true</fork> <!-- fork is enable,用于明确表示编译版本配置的可用 --> 
+               	<defaultLibBundleDir>lib</defaultLibBundleDir>
+               	<source>1.7</source>
+               	<target>1.7</target>
+               	<encoding>UTF-8</encoding>
+               	
+               	<!-- 如果配置了JAVA_HOME,下面应该可以不用配 
+                <executable>C:\Program Files (x86)\Java\jdk1.8.0_91\bin\javac.exe</executable>
+                -->
+            </configuration>
+  	 	</plugin>	
+  	 	
+  	 	<!-- 用于生成jar包的plugin -->
+  	 	<plugin>
+  	 		<groupId>org.apache.maven.plugins</groupId>
+  	 		<artifactId>maven-jar-plugin</artifactId>
+  	 		<version>2.6</version>
+  	 		<configuration>
+  	 			<!-- 把生成的jar包放在lib目录下（和其他所有jar包一起） -->
+  	 			<outputDirectory>${project.build.directory}/server</outputDirectory>
+  	 			<archive>
+  	 				<!-- 自定义classpath -->
+  	 				<manifestEntries>
+                		<Class-Path>.</Class-Path>
+            		</manifestEntries>
+  	 				<manifest>
+                        <addClasspath>true</addClasspath>
+                        <!-- classpath 对引入jar添加前缀-->
+                        <classpathPrefix>lib</classpathPrefix>
+                        <mainClass>com.start.Main</mainClass>
+                    </manifest>
+  	 			</archive>
+  	 			
+  	 			<!--
+  	 				  排除掉一些文件,不要放到jar包中，
+                   	  这里是为了排除掉src/main/resources中的文件（它们应该放到conf目录）
+                   	  这里只能指定要排除的目标文件，而不能指定源文件，虽然不够完美，但是基本能达到目的。
+				-->
+  	 			<excludes>
+                   <exclude>/config/**</exclude>
+                </excludes>
+                
+  	 		</configuration>
+  	 	</plugin>
+  	 	
+  	   <!-- 用于拷贝maven依赖的plugin -->
+       <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>2.10</version>
+    		<executions>
+    			<execution>
+    				<id>copy-dependencies</id>
+    				<phase>package</phase>
+    				<goals>
+    					<goal>copy-dependencies</goal>
+    				</goals>
+    				<configuration>
+                        <!-- 把依赖的所有maven jar包拷贝到lib目录中（这样所有的jar包都在lib目录中） -->
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+                        </configuration>
+    			</execution>
+    		</executions>	       
+           
+       </plugin>
+  	 	
+  	 	
+  	 	<!-- 解决资源文件的编码问题 -->
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-resources-plugin</artifactId>
+            <version>2.7</version>
+            <configuration>
+                <encoding>UTF-8</encoding>
+            </configuration>
+        </plugin>
+        
+        <!-- 打包zip -->
+        <plugin>  
+             <groupId>org.apache.maven.plugins</groupId>  
+             <artifactId>maven-assembly-plugin</artifactId>  
+             <version>2.2.1</version>  
+             <configuration>  
+                 <encoding>UTF-8</encoding>  
+                 <appendAssemblyId>false</appendAssemblyId>  
+                 <descriptors>  
+                     <descriptor>package.xml</descriptor> 
+                 </descriptors>  
+             </configuration>
+             <!-- 添加就用package 调用,不然就用 assembly:assembly-->
+             <executions>
+		      <execution>
+		        <id>make-assembly</id>
+		        <phase>package</phase>
+		        <goals>
+		          <goal>single</goal>
+		        </goals>
+		      </execution>
+		    </executions>
+       	</plugin>
+        
+        <!-- 配置生成源代码jar的plugin 
+        <plugin>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>2.4</version>
+            <configuration>
+                <attach>true</attach>
+                <encoding>UTF-8</encoding>
+                <outputDirectory>${project.build.directory}/lib</outputDirectory>
+            </configuration>
+            <executions>
+                <execution>
+                    <phase>compile</phase>
+                    <goals>
+                        <goal>jar</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
+        -->
+  	</plugins>
+  
+  </build>
+</project>

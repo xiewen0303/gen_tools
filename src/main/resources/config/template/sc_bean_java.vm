@@ -1,0 +1,365 @@
+package $package;
+
+import java.util.Arrays;
+import com.benniu.game.message.IMessageWritable;
+import com.benniu.game.message.generated.MessageCode;
+import java.nio.ByteBuffer;
+import com.benniu.game.message.util.MessageUtil;
+
+#foreach( $import in $importList )
+import $import;
+#end
+
+/**
+ * 
+ * $comment
+ * @author MessageGenerator
+ *
+ */
+public final class $className implements IMessageWritable{
+	
+#foreach( $beanProp in $propList )
+#if ($beanProp.children == -1)
+	private ${beanProp.clz}[] $beanProp.name;
+#else
+	private $beanProp.clz $beanProp.name;
+#end
+#end
+ 
+
+#foreach( $beanProp in $propList )
+#if($beanProp.clz == "boolean")
+	public $beanProp.clz is${beanProp.method}(){
+		return $beanProp.name;
+	}
+	/**
+	 * $beanProp.comment
+	 */
+	public void set$beanProp.method ($beanProp.clz $beanProp.name) {
+		this.$beanProp.name = $beanProp.name;
+	}
+#elseif ($beanProp.children == -1)
+	public ${beanProp.clz}[] get${beanProp.method}(){
+		return $beanProp.name;
+	}
+	/**
+	 * $beanProp.comment
+	 */
+	public void set$beanProp.method (${beanProp.clz}[] $beanProp.name) {
+		this.$beanProp.name = $beanProp.name;
+	}
+#else
+	public $beanProp.clz get${beanProp.method}(){
+		return $beanProp.name;
+	}
+	/**
+	 * $beanProp.comment
+	 */
+	public void set$beanProp.method ($beanProp.clz $beanProp.name) {
+		this.$beanProp.name = $beanProp.name;
+	}
+#end
+#end
+
+	@Override
+	public ByteBuffer write() throws Exception {
+		int length = 8; 
+#foreach( $beanProp in $propList )
+#set($clz = $beanProp.clz)
+#if ($clz == "String" )
+		length += MessageUtil.getLength($beanProp.name);//short head + string + $beanProp.name
+#elseif ($clz == "int" )
+		length += 4;//int $beanProp.name
+#elseif ($clz == "long" || $clz == "double" || $clz == "float" )
+		length += 8;//long double float $beanProp.name
+#elseif ($clz == "byte" )
+		length += 1;//byte $beanProp.name
+#elseif ($clz == "short" )
+		length += 2;//short $beanProp.name
+#elseif ($clz == "boolean" )
+		length += 1;
+#end
+#if ($beanProp.children == 1)
+#calcObjectLength($beanProp)
+#end
+#if ($beanProp.children == -1)
+#calcArrayLength($beanProp)
+#end
+#if ($beanProp.children == -11)
+#calcSimpleArrayLength($beanProp)
+#end
+#end
+		ByteBuffer buffer = ByteBuffer.allocate(length);
+		buffer.putInt(length);
+		buffer.putInt(MessageCode.$messageCode);
+#foreach( $beanProp in $propList )
+#set($clz = $beanProp.clz)
+#if ($clz == "String" ) 
+		MessageUtil.writeString(buffer, $beanProp.name);
+#elseif ($clz == "int" )
+		buffer.putInt($beanProp.name);
+#elseif ($clz == "long" )
+		buffer.putLong($beanProp.name);
+#elseif ( $clz == "double" )
+		buffer.putDouble($beanProp.name);
+#elseif ($clz == "float" )
+		buffer.putFloat($beanProp.name);
+#elseif ($clz == "byte" )
+		buffer.put($beanProp.name);
+#elseif ($clz == "short" )
+		buffer.putShort($beanProp.name);
+#elseif ($clz == "boolean" )
+		buffer.put((byte)($beanProp.name == true?1:0));
+#end
+#if ($beanProp.children == 1)
+#writeObject($beanProp)
+#end
+#if ($beanProp.children == -1)
+#writeArray($beanProp)
+#end
+#if ($beanProp.children == -11)
+#writeSimpleArray($beanProp)
+#end
+#end
+		return buffer;
+	}
+		
+	@Override
+	public String toString(){
+		return "$className [ " +
+#foreach( $beanProp in $propList )
+#if ($beanProp.children == 1)
+			", ${beanProp.name}=" + ${beanProp.name} +
+#elseif ($beanProp.children == -1 || $beanProp.children == -11)
+			", ${beanProp.name}=" + Arrays.toString(${beanProp.name}) +
+#else
+			", ${beanProp.name}=" + $beanProp.name +
+#end
+#end		
+			"]";
+	}
+
+}
+
+############################################################################
+#macro(calcObjectLength $beanProp)
+#set($bpclz = $beanProp.clz)
+#set($name = $beanProp.name)
+		length += 1; //object is null or not: 0 null,-1 object
+		if ($name != null){
+#foreach ($bp in $beanProp.object )
+#set($clz = $bp.clz)
+#if ($clz == "String" )
+			length += MessageUtil.getLength(${name}.get${bp.method}());//${bpclz}.$clz
+#elseif ($clz == "int" )
+			length += 4;//$bpclz int
+#elseif ($clz == "long" )
+			length += 8;//$bpclz long
+#elseif ( $clz == "double" )
+			length += 8;//$bpclz double
+#elseif ($clz == "float" )
+			length += 4;//$bpclz float
+#elseif ($clz == "byte" )
+			length += 1;//$bpclz byte
+#elseif ($clz == "short" )
+			length += 2;//$bpclz short
+#elseif ($clz == "boolean" )
+			length += 1;//$bpclz boolean
+#end
+#if ($bp.children == 1)
+			$bp.clz $bp.name = ${beanProp.name}.get${bp.method}(); //test b1
+#calcObjectLength($bp)
+#end
+#if ($bp.children == -1)
+			${bp.clz}[] $bp.name = ${beanProp.name}.get${bp.method}(); //test b2
+#calcArrayLength($bp)
+#end
+#if ($bp.children == -11)
+			$bp.clz $bp.name = ${beanProp.name}.get${bp.method}(); // test b3
+#calcSimpleArrayLength($bp)
+#end
+#end
+		}
+#end
+
+############################################################################
+#macro(calcArrayLength $beanProp)
+#set($bpclz = $beanProp.clz)
+#set($name = $beanProp.name)
+		length += 4; //$bpclz array.length
+		int ${name}L = (${name}!=null?${name}.length:0);  //null or not
+		for (int ${name}I=0; ${name}I < ${name}L; ${name}I++) {
+#foreach ($bp in $beanProp.object )
+#set($clz = $bp.clz)
+#if ($clz == "String" )
+			length += MessageUtil.getLength(${name}[${name}I].get${bp.method}());//${bpclz}.$clz
+#elseif ($clz == "int" )
+			length += 4;//$bpclz int
+#elseif ($clz == "long" )
+			length += 8;//$bpclz long
+#elseif ( $clz == "double" )
+			length += 8;//$bpclz double
+#elseif ($clz == "float" )
+			length += 4;//$bpclz float
+#elseif ($clz == "byte" )
+			length += 1;//$bpclz byte
+#elseif ($clz == "short" )
+			length += 2;//$bpclz short
+#elseif ($clz == "boolean" )
+			length += 1;//$bpclz boolean
+#end
+#if ($bp.children == 1)
+			$bp.clz $bp.name = ${beanProp.name}[${beanProp.name}I].get${bp.method}(); //test_1
+#set($bpTemp = $bp)
+#calcObjectLength($bpTemp)
+#end
+#if ($bp.children == -1)
+			${bp.clz}[] $bp.name = ${beanProp.name}[${beanProp.name}I].get${bp.method}(); //test_2
+#set($bpTemp = $bp)
+#calcArrayLength($bpTemp)
+#end
+#if ($bp.children == -11)
+			$bp.clz $bp.name = ${beanProp.name}[${beanProp.name}I].get${bp.method}(); //test_3
+#set($bpTemp = $bp)
+#calcSimpleArrayLength($bpTemp)
+#end
+#end
+		}
+#end
+
+############################################################################
+#macro(writeObject $beanProp)
+#set($bpclz = $beanProp.clz)
+#set($name = $beanProp.name)
+		buffer.put((byte)(${name}==null ? 0:10)); //null or not
+		if (${name}!=null){
+#foreach ($bp in $beanProp.object )
+#set($clz = $bp.clz)
+#if ($clz == "String" )
+			MessageUtil.writeString(buffer, ${name}.get${bp.method}());
+#elseif ($clz == "int" )
+			buffer.putInt(${name}.get${bp.method}());//$bpclz .$clz
+#elseif ($clz == "long" )
+			buffer.putLong(${name}.get${bp.method}());//$bpclz .$clz
+#elseif ( $clz == "double" )
+			buffer.putDouble(${name}.get${bp.method}());//$bpclz .$clz
+#elseif ($clz == "float" )
+			buffer.putFloat(${name}.get${bp.method}());//$bpclz .$clz
+#elseif ($clz == "byte" )
+			buffer.put(${name}.get${bp.method}());//$bpclz .$clz
+#elseif ($clz == "short" )
+			buffer.putShort(${name}.get${bp.method}());//$bpclz .$clz
+#elseif ($clz == "boolean" )
+			buffer.put((byte)(${name}.is${bp.method}() == true?1:0));//$bpclz .$clz
+#end
+#if ($bp.children == 1)
+			$bp.clz $bp.name = ${name}.get${bp.method}(); //OLD: $bp.clz $bp.name = ${beanProp.name}.get${bp.method}();
+#writeObject($bp)
+#end
+#if ($bp.children == -1)
+			${bp.clz}[] $bp.name = ${beanProp.name}.get${bp.method}(); // test ??? 
+#writeArray($bp)
+#end
+#if ($bp.children == -11)
+			$bp.clz $bp.name = ${beanProp.name}.get${bp.method}();
+#writeSimpleArray($bp)
+#end
+#end
+		}
+#end
+
+############################################################################
+#macro(writeArray $beanProp)
+#set($bpclz = $beanProp.clz)
+#set($name = $beanProp.name) 
+		int ${name}LL = (${name}!=null?${name}.length:0);  //null or not
+		buffer.putInt(${name}LL);//${bpclz}.length
+		for (int ${name}I=0; ${name}I < ${name}LL; ${name}I++) {
+#foreach ($bp in $beanProp.object )
+#set($clz = $bp.clz)
+#if ($clz == "String" )
+			MessageUtil.writeString(buffer, ${name}[${name}I].get${bp.method}());
+#elseif ($clz == "int" )
+			buffer.putInt(${name}[${name}I].get${bp.method}()); //$bpclz .$clz
+#elseif ($clz == "long" )
+			buffer.putLong(${name}[${name}I].get${bp.method}()); //$bpclz .$clz
+#elseif ( $clz == "double" )
+			buffer.putDouble(${name}[${name}I].get${bp.method}()); //$bpclz .$clz
+#elseif ($clz == "float" )
+			buffer.putFloat(${name}[${name}I].get${bp.method}()); //$bpclz .$clz
+#elseif ($clz == "byte" )
+			buffer.put(${name}[${name}I].get${bp.method}()); //$bpclz .$clz
+#elseif ($clz == "short" )
+			buffer.putShort(${name}[${name}I].get${bp.method}()); //$bpclz .$clz
+#elseif ($clz == "boolean" )
+			buffer.put((byte)(${name}[${name}I].is${bp.method}() == true?1:0)); //$bpclz .$clz
+#end
+#if ($bp.children == 1)
+			$bp.clz $bp.name = ${beanProp.name}[${beanProp.name}I].get${bp.method}();
+#writeObject($bp)
+#end
+#if ($bp.children == -1)
+			${bp.clz}[] $bp.name = ${beanProp.name}[${beanProp.name}I].get${bp.method}();
+#writeArray($bp)
+#end
+#if ($bp.children == -11)
+			$bp.clz $bp.name = ${beanProp.name}[${beanProp.name}I].get${bp.method}();
+#writeSimpleArray($bp)
+#end
+#end
+		}
+#end
+
+############################################################################
+#macro(calcSimpleArrayLength $beanProp)
+#set($clz = $beanProp.clz)
+#set($name = $beanProp.name)
+		length += 4; 
+		int ${name}L = (${name}!=null ? ${name}.length:0);  //null or not
+		for (int ${name}I=0; ${name}I < ${name}L; ${name}I++) {
+#if ($clz == "String[]" )
+			length += MessageUtil.getLength(${name}[${name}I]);
+#elseif ($clz == "int[]" )
+			length += 4;
+#elseif ($clz == "long[]" )
+			length += 8;
+#elseif ( $clz == "double[]" )
+			length += 8;
+#elseif ($clz == "float[]" )
+			length += 4;
+#elseif ($clz == "byte[]" )
+			length += 1;
+#elseif ($clz == "short[]" )
+			length += 2;
+#elseif ($clz == "boolean[]" )
+			length += 1;
+#end
+		}
+#end
+
+############################################################################
+#macro(writeSimpleArray $beanProp)
+#set($clz = $beanProp.clz)
+#set($nameA = $beanProp.name)
+		int ${nameA}LL = (${nameA}!=null ? ${nameA}.length:0);  //null or not
+		buffer.putInt(${nameA}LL);
+		for (int ${nameA}I=0; ${nameA}I < ${nameA}LL; ${nameA}I++) {
+#if ($clz == "String[]" )
+			MessageUtil.writeString(buffer, ${nameA}[${nameA}I]);
+#elseif ($clz == "int[]" )
+			buffer.putInt(${nameA}[${nameA}I]); 
+#elseif ($clz == "long[]" )
+			buffer.putLong(${nameA}[${nameA}I]); 
+#elseif ( $clz == "double[]" )
+			buffer.putDouble(${nameA}[${nameA}I]); 
+#elseif ($clz == "float[]" )
+			buffer.putFloat(${nameA}[${nameA}I]); 
+#elseif ($clz == "byte[]" )
+			buffer.put(${nameA}[${nameA}I]); 
+#elseif ($clz == "short[]" )
+			buffer.putShort(${nameA}[${nameA}I]); 
+#elseif ($clz == "boolean[]" )
+			buffer.put((byte)(${nameA}[${nameA}I] == true?1:0)); 
+#end
+		}
+#end

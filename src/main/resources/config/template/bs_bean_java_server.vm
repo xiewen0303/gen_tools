@@ -1,0 +1,247 @@
+package $package;
+
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+
+import com.pps.core.ITransit;
+import com.pps.core.TransitToken;
+import com.pps.core.player.IPlayer;
+import com.pps.core.message.IMessageReadable;
+import com.pps.game.message.MessageUtil;
+
+import $ctlImport;
+
+#foreach( $import in $importList )
+import $import;
+#end
+
+/**
+ * 
+ * $comment
+ * @author MessageGenerator
+ *
+ */
+public final class $className implements IMessageReadable,ITransit {
+
+	private TransitToken token;
+	
+#foreach( $beanProp in $propList )
+#if ($beanProp.children == -1)
+	private ${beanProp.clz}[] $beanProp.name;
+#else
+	private $beanProp.clz $beanProp.name;
+#end
+#end
+
+	@Override
+	public TransitToken getToken() {
+		return token;
+	}
+
+	@Override
+	public int getTraceId() {
+		return 0;
+	}
+
+#foreach( $beanProp in $propList )
+	/**
+	 * $beanProp.comment
+	 */
+#if($beanProp.clz == "boolean")
+	public $beanProp.clz is${beanProp.method}(){
+		return $beanProp.name;
+	}
+	public void set$beanProp.method ($beanProp.clz $beanProp.name) {
+		this.$beanProp.name = $beanProp.name;
+	}
+#elseif ($beanProp.children == -1)
+	public ${beanProp.clz}[] get${beanProp.method}(){
+		return $beanProp.name;
+	}
+	public void set$beanProp.method (${beanProp.clz}[] $beanProp.name) {
+		this.$beanProp.name = $beanProp.name;
+	}
+#else
+	public $beanProp.clz get${beanProp.method}(){
+		return $beanProp.name;
+	}
+	public void set$beanProp.method ($beanProp.clz $beanProp.name) {
+		this.$beanProp.name = $beanProp.name;
+	}
+#end
+#end
+
+	@Override
+	public void read(ByteBuffer buffer) throws Exception {
+		token = new TransitToken();
+		token.setServer(buffer.getInt());
+		token.setProvider(MessageUtil.readString(buffer));
+		token.setName(MessageUtil.readString(buffer));
+#foreach( $beanProp in $propList )
+#set($clz = $beanProp.clz)
+#if ($clz == "String" ) 
+		$beanProp.name= MessageUtil.readString(buffer);
+#elseif ($clz == "int" )
+		$beanProp.name = buffer.getInt();
+#elseif ($clz == "long" )
+		$beanProp.name = buffer.getLong();
+#elseif ( $clz == "double" )
+		$beanProp.name = buffer.getDouble();
+#elseif ($clz == "float" )
+		$beanProp.name = buffer.getFloat();
+#elseif ($clz == "byte" )
+		$beanProp.name = buffer.get();
+#elseif ($clz == "short" )
+		$beanProp.name = buffer.getShort();
+#elseif ($clz == "boolean" )
+		$beanProp.name = buffer.get()==0?false:true;
+#end
+#if ($beanProp.children == 1)
+		$beanProp.name = new ${beanProp.clz}();
+#readObjectBServer($beanProp)
+#end
+#if ($beanProp.children == -1)
+#set($p = "this")
+#readArrayBServer($beanProp $p)
+#end
+#if ($beanProp.children == -11)
+#set($p = "this")
+#readSimpleArrayBServer($beanProp $p)
+#end
+#end
+	}	
+
+	@Override
+	public void handle(IPlayer player) throws Exception {
+		${ctlName}.${method}(token, this);
+	}
+	
+	@Override
+	public String toString(){
+		return "$className [ " +
+#foreach( $beanProp in $propList )
+#if ($beanProp.children == 1)
+			", ${beanProp.name}=" + ${beanProp.name}.toString() +
+#elseif ($beanProp.children == -1 || $beanProp.children == -11)
+			", ${beanProp.name}=" + Arrays.toString(${beanProp.name}) +
+#else
+			", ${beanProp.name}=" + $beanProp.name +
+#end
+#end		
+			"]";
+	}
+}
+
+#########################################################
+#macro(readObjectBServer $beanProp)
+#set($name = $beanProp.name)
+		if (buffer.get()==-1){
+#foreach( $bp in $beanProp.object )
+#set($clz = $bp.clz)
+#if ($clz == "String" ) 
+			${name}.set${bp.method}(MessageUtil.readString(buffer));
+#elseif ($clz == "int" )
+			${name}.set${bp.method}(buffer.getInt());
+#elseif ($clz == "long" )
+			${name}.set${bp.method}(buffer.getLong());
+#elseif ( $clz == "double" )
+			${name}.set${bp.method}(buffer.getDouble());
+#elseif ($clz == "float" )
+			${name}.set${bp.method}(buffer.getFloat());
+#elseif ($clz == "byte" )
+			${name}.set${bp.method}(buffer.get());
+#elseif ($clz == "short" )
+			${name}.set${bp.method}(buffer.getShort());
+#elseif ($clz == "boolean" )
+			${name}.set${bp.method}(buffer.get()==0?false:true);
+#end
+#if ($bp.children == 1)
+	 		$clz ${bp.name} = new ${clz}();
+	 		${name}.set${bp.method}(${bp.name});
+#readObjectBServer($bp)
+#end
+#if ($bp.children == -1)
+#readArrayBServer($bp $beanProp.name)
+#end
+#if ($bp.children == -11)
+#readSimpleArrayBServer($bp $beanProp.name)
+#end
+#end
+		}
+#end
+
+#########################################################
+#macro(readArrayBServer $beanProp $p)
+#set($name = $beanProp.name)
+		int ${name}Length = buffer.getInt();
+		${beanProp.clz}[] ${name} = null;
+		if (${name}Length > 0){
+			${name} = new ${beanProp.clz}[${name}Length];
+			${p}.set${beanProp.method}(${name});
+		}
+		for (int ${name}I=0; ${name}I < ${name}Length; ${name}I++){
+			${name}[${name}I] = new ${beanProp.clz}();
+#foreach( $bp in $beanProp.object )
+#set($clz = $bp.clz)
+#if ($clz == "String" ) 
+			${name}[${name}I].set${bp.method}(MessageUtil.readString(buffer));
+#elseif ($clz == "int" )
+			${name}[${name}I].set${bp.method}(buffer.getInt());
+#elseif ($clz == "long" )
+			${name}[${name}I].set${bp.method}(buffer.getLong());
+#elseif ( $clz == "double" )
+			${name}[${name}I].set${bp.method}(buffer.getDouble());
+#elseif ($clz == "float" )
+			${name}[${name}I].set${bp.method}(buffer.getFloat());
+#elseif ($clz == "byte" )
+			${name}[${name}I].set${bp.method}(buffer.get());
+#elseif ($clz == "short" )
+			${name}[${name}I].set${bp.method}(buffer.getShort());
+#elseif ($clz == "boolean" )
+			${name}[${name}I].set${bp.method}(buffer.get()==0?false:true);
+#end
+#if ($bp.children == 1)
+#readObject($bp)
+#end
+#if ($bp.children == -1)
+#set($bpn = ${name}+"["+${name}+"I]" )
+#readArrayBServer($bp $bpn)
+#end
+#if ($bp.children == -11)
+#set($bpn = ${name}+"["+${name}+"I]" )
+#readSimpleArrayBServer($bp $bpn)
+#end
+#end	
+		}
+#end
+
+#########################################################
+#macro(readSimpleArrayBServer $beanProp $p)
+#set($name = $beanProp.name)
+		int ${name}Length = buffer.getInt();
+		$beanProp.clz ${name} = null;
+		if (${name}Length > 0){
+			${name} = new ${beanProp.clzOrigin}[${name}Length];
+			${p}.set${beanProp.method}(${name});
+		}
+		for (int ${name}I=0; ${name}I < ${name}Length; ${name}I++){
+#set($clz = $beanProp.clz)
+#if ($clz == "String[]" ) 
+			${name}[${name}I] = MessageUtil.readString(buffer);
+#elseif ($clz == "int[]" )
+			${name}[${name}I] = buffer.getInt();
+#elseif ($clz == "long[]" )
+			${name}[${name}I] = buffer.getLong();
+#elseif ( $clz == "double[]" )
+			${name}[${name}I] = buffer.getDouble();
+#elseif ($clz == "float[]" )
+			${name}[${name}I] = buffer.getFloat();
+#elseif ($clz == "byte[]" )
+			${name}[${name}I] = buffer.get();
+#elseif ($clz == "short[]" )
+			${name}[${name}I] = buffer.getShort();
+#elseif ($clz == "boolean[]" )
+			${name}[${name}I] = (buffer.get()==0?false:true);
+#end
+		}
+#end

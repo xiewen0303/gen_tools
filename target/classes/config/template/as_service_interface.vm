@@ -1,0 +1,23 @@
+package ghostcoming.protocol 
+{
+
+	import flash.utils.ByteArray;
+#foreach( $import in $importList )
+#if (!$import.contains("java"))
+	import $import;
+#end
+#end
+
+	/**
+ 	 * 
+ 	 * $comment
+ 	 * @author MessageGenerator
+ 	 *
+ 	 */
+	public interface I${className}Service
+	{
+#foreach( $scMessage in $scMessageList )
+		function ${scMessage.cmdName}(#set($len = $scMessage.propList.size())#set($i = 0)#foreach( $beanProp in $scMessage.propList )#set($i=$i+1)#set($clz = $beanProp.clz)#if ($clz == "String" )${beanProp.name}:String#elseif ($clz == "int" || $clz == "short" || $clz == "byte")${beanProp.name}:int#elseif ($clz == "double" || $clz == "float")${beanProp.name}:Number#elseif ($clz == "boolean" )${beanProp.name}:Boolean#else${beanProp.name}:$clz#end#if($i != $len),#end#end):void;
+#end
+	}
+}

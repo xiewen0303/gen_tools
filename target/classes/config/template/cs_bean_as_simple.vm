@@ -1,0 +1,200 @@
+package $package {
+
+	import flash.utils.ByteArray;
+	import com.benniu.application.services.message.IMessageWritable;
+	import com.benniu.application.services.message.MessageCode; 
+
+#foreach( $import in $importList )
+#if (!$import.contains("java"))
+	import $import;
+#end
+#end
+
+	/**
+ 	 * 
+ 	 * $comment
+ 	 * @author MessageGenerator
+	 *
+	 */
+	public class $className  implements IMessageWritable{
+
+#foreach( $beanProp in $propList )
+#set($clz = $beanProp.clz)
+#if ($clz.contains("byte") || $clz.contains("short"))
+#set($clz = "int")
+#elseif ($clz.contains("long") || $clz.contains("double") || $clz.contains("float") )
+#set($clz = "Number")
+#elseif ($clz.contains("boolean"))
+#set($clz = "Boolean")
+#end
+		/**
+	 	 * $beanProp.comment
+	 	 */
+		public var $beanProp.name:$clz;
+#end
+
+		public function write():ByteArray{
+
+			var buffer:ByteArray = new ByteArray();
+			buffer.writeInt(0);
+			buffer.writeInt(MessageCode.$messageCode); 
+#foreach( $beanProp in $propList )
+#set($clz = $beanProp.clz)
+#if ($clz == "String" ) 
+			buffer.writeUTF($beanProp.name);
+#elseif ($clz == "int" )
+			buffer.writeInt($beanProp.name);
+#elseif ($clz == "long" )
+			buffer.writeLong($beanProp.name;
+#elseif ( $clz == "double" )
+			buffer.writeDouble($beanProp.name);
+#elseif ($clz == "float" )
+			buffer.writeFloat($beanProp.name);
+#elseif ($clz == "byte" )
+			buffer.writeByte($beanProp.name);
+#elseif ($clz == "short" )
+			buffer.writeShort($beanProp.name);
+#elseif ($clz == "boolean" )
+			buffer.writeBoolean($beanProp.name);
+#end
+#if ($beanProp.children == 1)
+#writeObjectASCS($beanProp)
+#end
+#if ($beanProp.children == -1)
+#writeArrayASCS($beanProp)
+#end
+#if ($beanProp.children == -11)
+#writeSimpleArrayASCS($beanProp)
+#end
+#end
+			buffer.position = 0;
+			buffer.writeInt(buffer.length);
+			return buffer;
+		}
+		
+		public function toString():String {
+			return "$className [ " +
+#foreach( $beanProp in $propList )
+#if ($beanProp.children == 1)
+				", ${beanProp.name}=" + (${beanProp.name} != null ? ${beanProp.name}.toString() : "") +
+#elseif ($beanProp.children == -1 || $beanProp.children == -11)
+				", ${beanProp.name}=" + (${beanProp.name} != null ? ${beanProp.name}.toString() : "") +
+#else
+				", ${beanProp.name}=" + $beanProp.name +
+#end
+#end		
+				"]";
+		}
+	}	
+}
+
+
+############################################################################
+#macro(writeObjectASCS $beanProp)
+#set($bpclz = $beanProp.clz)
+#set($name = $beanProp.name)
+			buffer.writeByte(${name}==null ? 0:-1);
+			if ($name != null){
+#foreach ($bp in $beanProp.object )
+#set($clz = $bp.clz)
+#if ($clz == "String" )
+				buffer.writeUTF(${name}.${bp.name});
+#elseif ($clz == "int" )
+				buffer.writeInt(${name}.${bp.name});//$bpclz .$clz
+#elseif ($clz == "long" )
+				buffer.writeLong(${name}.${bp.name});//$bpclz .$clz
+#elseif ( $clz == "double" )
+				buffer.writeDouble(${name}.${bp.name});//$bpclz .$clz
+#elseif ($clz == "float" )
+				buffer.writeFloat(${name}.${bp.name});//$bpclz .$clz
+#elseif ($clz == "byte" )
+				buffer.writeByte(${name}.${bp.name});//$bpclz .$clz
+#elseif ($clz == "short" )
+				buffer.writeShort(${name}.${bp.name});//$bpclz .$clz
+#elseif ($clz == "boolean" )
+				buffer.writeBoolean(${name}.${bp.name});//$bpclz .$clz
+#end
+#if ($bp.children == 1)
+				var ${bp.name}:$bp.clz = ${name}.$bp.name;
+#writeObjectASCS($bp)
+#end
+#if ($bp.children == -1)
+				var ${bp.name}:$bp.clz = ${name}.$bp.name;
+#writeArrayASCS($bp)
+#end
+#if ($bp.children == -11)
+				var ${bp.name}:$bp.clz = ${name}.$bp.name;
+#writeSimpleArrayASCS($bp)
+#end
+#end
+			}
+#end
+
+############################################################################
+#macro(writeArrayASCS $beanProp)
+#set($bpclz = $beanProp.clz)
+#set($name = $beanProp.name)
+			var ${name}L:int = (${name} == null ? 0: ${name}.length);
+			buffer.writeInt(${name}L);//${bpclz}.length
+			for (var ${name}I:int = 0; ${name}I < ${name}L; ${name}I++) {
+#foreach ($bp in $beanProp.object )
+#set($clz = $bp.clz)
+#if ($clz == "String" )
+				buffer.writeUTF(${name}[${name}I].${bp.name});
+#elseif ($clz == "int" )
+				buffer.writeInt(${name}[${name}I].${bp.name}); //$bpclz .$clz
+#elseif ($clz == "long" )
+				buffer.writeLong(${name}[${name}I].${bp.name}); //$bpclz .$clz
+#elseif ( $clz == "double" )
+				buffer.writeDouble(${name}[${name}I].${bp.name}); //$bpclz .$clz
+#elseif ($clz == "float" )
+				buffer.writeFloat(${name}[${name}I].${bp.name}); //$bpclz .$clz
+#elseif ($clz == "byte" )
+				buffer.writeByte(${name}[${name}I].${bp.name}); //$bpclz .$clz
+#elseif ($clz == "short" )
+				buffer.writeShort(${name}[${name}I].${bp.name}); //$bpclz .$clz
+#elseif ($clz == "boolean" )
+				buffer.writeBoolean(${name}[${name}I].${bp.name}); //$bpclz .$clz
+#end
+#if ($bp.children == 1)
+			var ${bp.name}:$bp.clz = ${name}.$bp.name;
+#writeObjectASCS($bp)
+#end
+#if ($bp.children == -1)
+			var ${bp.name}:$bp.clz = ${name}.$bp.name;
+#writeArrayASCS($bp)
+#end
+#if ($bp.children == -11)
+			var ${bp.name}:$bp.clz = ${name}.$bp.name;
+#writeSimpleArrayASCS($bp)
+#end
+#end
+			}
+#end
+
+############################################################################
+#macro(writeSimpleArrayASCS $beanProp)
+#set($clz = $beanProp.clz)
+#set($name = $beanProp.name)
+			var ${name}L:int = (${name} == null ? 0: ${name}.length);
+			buffer.writeInt(${name}L);
+			for (var ${name}I:int = 0; ${name}I < ${name}L; ${name}I++) {
+#if ($clz.contains("String"))
+				buffer.writeUTF(${name}[${name}I]);
+#elseif ($clz.contains("int"))
+				buffer.writeInt(${name}[${name}I]); 
+#elseif ($clz.contains("long"))
+				buffer.writeLong(${name}[${name}I]); 
+#elseif ( $clz.contains("double" ))
+				buffer.writeDouble(${name}[${name}I]); 
+#elseif ($clz.contains("float"))
+				buffer.writeFloat(${name}[${name}I]); 
+#elseif ($clz.contains("byte"))
+				buffer.writeByte(${name}[${name}I]);
+#elseif ($clz.contains("short"))
+				buffer.writeShort(${name}[${name}I]); 
+#elseif ($clz.contains("boolean"))
+				buffer.writeBoolean(${name}[${name}I]); 
+#end
+			}
+#end

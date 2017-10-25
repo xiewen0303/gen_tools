@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<controllers >
+<controller type="HeroCtl" packageServer="com.benniu.game.service.hero" packageClient="ghostcoming.protocol" moduleName="hero" comment="角色" >
+
+	<message id="CS_HERO_INFO" type="CSHeroInfo" method="getHeroInfo" comment="角色属性"> 
+	</message>
+
+	<message id="SC_HERO_INFO" type="SCHeroInfo" method="" comment="角色属性">
+		<property id="pkId" type="String" comment="自己的PkId" />
+		<property id="heroName" type="String" comment="名称" />
+		<property id="vipLevel" type="int" comment="vip等级" />
+		<property id="gold" type="int" comment="金币" />
+		<property id="diamond" type="int" comment="钻石" />
+		<property id="tili" type="int" comment="体力" />
+		<property id="arenaScore" type="int" comment="竞技场积分" />
+		<property id="tiliCD" type="int" comment="体力倒计时(5分钟恢复一次体力)" />
+		
+		<array id="personIds" type="String" comment="出征阵容各个角色的personId,如果为-1,表示该阵位没有人" />
+		<array id="heroInfoList" type="com.benniu.game.service.hero.HeroInfoVo" client="ghostcoming.protocol.vo.HeroInfoVo" comment="角色列表" >
+			<property id="personId" type="String" comment="角色ID" />
+			<property id="level" type="int" comment="角色阶级" />
+			<property id="skillLevels" type="String" comment="技能等级(json格式id=lvl)" /> 
+			<property id="configId" type="int" comment="配置模板Id" />
+			<property id="personAttrs" type="String" comment="角色战斗属性信息(json格式key=value)" />
+		</array>
+		<property id="rechargeDiamond" type="int" comment="已经充值的钻石数" />
+	</message>
+	
+	<message id="CS_VIEW_HEROINFO" type="CSViewHeroInfo" method="getTargetHeroInfo" comment="查看其他人的阵容信息">
+		<property id="targetPkId" type="String" comment="查看的目标" />
+	</message>
+
+	<message id="SC_VIEW_HEROINFO" type="SCViewHeroInfo" method="" comment="查看其他人的阵容信息" >
+		<array id="personIds" type="String" comment="出征阵容各个角色的personId,如果为-1,表示该阵位没有人" />
+		<array id="heroInfoList" type="com.benniu.game.service.hero.HeroInfoVo" client="ghostcoming.protocol.vo.HeroInfoVo" comment="角色列表" >
+			<property id="personId" type="String" comment="角色ID" />
+			<property id="level" type="int" comment="角色阶级" />
+			<property id="skillLevels" type="String" comment="技能等级(json格式id=lvl)" /> 
+			<property id="configId" type="int" comment="配置模板Id" />
+			<property id="personAttrs" type="String" comment="角色战斗属性信息(json格式key=value)" />
+		</array>
+		
+		<array id="itemLists" type="com.benniu.game.service.bag.ItemInfoVo" client="ghostcoming.protocol.vo.ItemInfoVo" comment="装备信息" >
+			<property id="itemPkId" type="String" comment="主键Id" />
+			<property id="configId" type="int" comment="配置Id" />
+			<property id="count" type="int" comment="数量" />
+			<property id="type" type="int" comment="类型(道具与装备配置表的type)" />
+			<property id="qhLevel" type="int" comment="强化等级" />
+			<property id="targetPersonPKId" type="String" comment="角色目标" />
+			<property id="equipSlot" type="int" comment="格位号" />
+			<property id="equipAttrs" type="String" comment="自身属性" />
+			<property id="oldPolish" type="String" comment="已经洗练属性" />
+			<property id="nowPolish" type="String" comment="当前洗练属性" />
+			<property id="maxPolish" type="String" comment="最大洗炼属性" />
+		</array>
+	</message>
+	 
+	
+
+	<message id="CS_SKILL_UP" type="CSSkillUp" method="upSkill" comment="角色技能升级"> 
+		<property id="skillId" type="int" comment="技能Id" />
+		<property id="personId" type="String" comment="角色pkId（主键Id）" />
+	</message>
+
+	<message id="SC_SKILL_UP" type="SCSkillUp" method="" comment="角色技能升级">
+		<property id="flagCode" type="int" comment="是否成功" />
+		<property id="personPkId" type="String" comment="角色pkId（主键Id）" />
+		<property id="flagCodeData" type="int" comment="提示代码参数" />
+	</message>
+
+	<message id="CS_PERSON_UP" type="CSPersonUp" method="upStar" comment="角色升级"> 
+		<property id="personPkId" type="String" comment="角色pkId（主键Id）" />
+	</message>
+
+	<message id="SC_PERSON_UP" type="SCPersonUp" method="" comment="角色属性">
+		<property id="flagCode" type="int" comment="是否成功" />
+		<property id="personPkId" type="String" comment="角色pkId（主键Id）" />
+	</message>
+
+	 <message id="CS_CHANGE_POSITION" type="CSChangePosition" method="changePosition" comment="阵容变更">
+		<property id="sourcePersonPkId" type="String" comment="上阵或切换阵位的源" />
+		<property id="sourcePosition" type="int" comment="自己身上的阵位号 （没有上阵时，阵位号为-1,上阵后的阵位号位1,2,3）" />
+		<property id="targetPosition" type="int" comment="目标阵位号" />
+	</message>
+
+	<message id="SC_CHANGE_POSITION" type="SCChangePosition" method="" comment="阵容变更">
+		<property id="flagCode" type="int" comment="提示信息" />
+	</message>
+	
+	
+	<message id="CS_BAG_ITEMS" type="CSBagItems" method="getBagItems" comment="背包道具列表">
+		<property id="type" type="int" comment="类型(-1:变化量,0:所有,1:装备【装备+碎片】,2:英雄碎片,3:其他的基础道具)" />
+	</message>
+	
+	<message id="SC_BAG_ITEMS" type="SCBagItems" method="" comment="背包道具列表">
+		<property id="type" type="int" comment="类型(-1:变化量,0:所有,1:装备【装备+碎片】,2:英雄碎片,3:其他的基础道具)" />
+		<array id="itemLists" type="com.benniu.game.service.bag.ItemInfoVo" client="ghostcoming.protocol.vo.ItemInfoVo" comment="道具信息" >
+			<property id="itemPkId" type="String" comment="主键Id" />
+			<property id="configId" type="int" comment="配置Id" />
+			<property id="count" type="int" comment="数量" />
+			<property id="type" type="int" comment="类型(道具与装备配置表的type)" />
+			<property id="qhLevel" type="int" comment="强化等级" />
+			<property id="targetPersonPKId" type="String" comment="角色目标" />
+			<property id="equipSlot" type="int" comment="格位号" />
+			<property id="equipAttrs" type="String" comment="自身属性" />
+			<property id="oldPolish" type="String" comment="已经洗练属性" />
+			<property id="nowPolish" type="String" comment="当前洗练属性" />
+			<property id="maxPolish" type="String" comment="最大洗炼属性" />
+		</array>
+	</message>
+	
+	<message id="CS_REFRESH_ATTRS" type="CSRefreshAttrs" method="refreshPersonAttrs" comment="刷新人物属性">
+		<property id="personPkId" type="String" comment="角色主键Id" />
+	</message>
+	
+	<message id="SC_REFRESH_ATTRS" type="SCRefreshAttrs" method="" comment="刷新人物属性">
+		<property id="personPkId" type="String" comment="角色主键Id" />
+	 	<property id="personAttrs" type="String" comment="角色战斗属性信息(json格式key=value)" />
+	 	<property id="starLevel" type="int" comment="星级" />
+	 	<property id="skillLevels" type="String" comment="技能等级(json格式id=lvl)" />
+	</message>
+	
+	
+	<message id="CS_PERSON_FORGE" type="CSPersonForge" method="personForge" comment="英雄合成">
+		<property id="heroDebrisPkId" type="String" comment="英雄碎片Id" />
+	</message>
+
+	<message id="SC_PERSON_FORGE" type="SCPersonForge" method="" comment="英雄合成">
+		<property id="flagCode" type="int" comment="提示信息" />
+		<object id="heroInfo" type="com.benniu.game.service.hero.HeroInfoVo" client="ghostcoming.protocol.vo.HeroInfoVo" comment="攻击者">
+			<property id="personId" type="String" comment="角色ID" />
+			<property id="level" type="int" comment="角色阶级" />
+			<property id="skillLevels" type="String" comment="技能等级(json格式id=lvl)" /> 
+			<property id="configId" type="int" comment="配置模板Id" />
+			<property id="personAttrs" type="String" comment="角色战斗属性信息(json格式key=value)" />
+		</object>
+	</message>
+	
+	<message id="CS_GET_RESOURCE" type="CSGetResource" method="getResource" comment="获取资源信息"> 
+	</message>
+
+	<message id="SC_GET_RESOURCE" type="SCGetResource" method="" comment="获取资源信息">
+		<property id="gold" type="int" comment="金币" />
+		<property id="diamond" type="int" comment="钻石" />
+		<property id="arenaScore" type="int" comment="竞技场积分" />
+		<property id="vipLevel" type="int" comment="vip等级" />
+		<property id="rechargeDiamond" type="int" comment="已经充值的钻石数" />
+	</message>
+	
+	
+	
+	<message id="CS_GET_TILI" type="CSGetTiLi" method="getTiLi" comment="获取体力信息"> 
+	</message>
+	
+	<message id="SC_GET_TILI" type="SCGetTiLi" method="" comment="获取体力信息">
+		<property id="tili" type="int" comment="体力" /> 
+		<property id="tiliCD" type="int" comment="体力倒计时(5分钟恢复一次体力)" />
+	</message>
+	
+	
+	<message id="CS_ADD_TILI" type="CSAddTiLi" method="addTiLi" comment="添加体力"> 
+	</message>
+	
+	<message id="SC_ADD_TILI" type="SCAddTiLi" method="" comment="添加体力">
+		<property id="flagCode" type="int" comment="提示信息" />
+		<property id="tili" type="int" comment="体力" />
+		<property id="tiliCD" type="int" comment="体力倒计时(5分钟恢复一次体力)" />
+	</message>
+	
+	<message id="CS_SHOP_GOLD" type="CSShopGold" method="shopGold" comment="钻石兑换金币"> 
+	</message>
+	
+	<message id="SC_SHOP_GOLD" type="SCShopGold" method="" comment="钻石兑换金币">
+		<property id="flagCode" type="int" comment="提示信息" />
+	</message>
+	
+	
+	<message id="CS_GET_ADDINFO" type="CSGetAddInfo" method="getAddInfo" comment="获取添加资源的相关数据"> 
+		<property id="type" type="int" comment="类型(1:体力,2:钻石购买金币,3:竞技场次数,4:精英副本次数)" />
+	</message>
+	
+	<message id="SC_GET_ADDINFO" type="SCGetAddInfo" method="" comment="获取添加资源的相关数据">
+		<property id="type" type="int" comment="提示信息" />
+		<property id="data" type="int" comment="数据" />
+		<property id="count" type="int" comment="已购买次数" />
+		<property id="maxCount" type="int" comment="最大可购买次数(没有则为0)" />
+	</message>
+	
+	<message id="CS_MODIFY_NAME" type="CSModifyName" method="modifyName" comment="修改名字"> 
+		<property id="nickName" type="String" comment="名字" />
+	</message>
+	
+	<message id="SC_MODIFY_NAME" type="SCModifyName" method="" comment="修改名字">
+		<property id="flagCode" type="int" comment="提示信息" />
+		<property id="nickName" type="String" comment="名字" />
+	</message>
+	
+</controller>
+</controllers>

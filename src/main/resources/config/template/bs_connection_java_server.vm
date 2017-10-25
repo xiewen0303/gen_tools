@@ -1,0 +1,48 @@
+package $package;
+
+import java.nio.ByteBuffer;
+
+import com.pps.core.connectormgr.TransitSession;
+import com.pps.core.connectormgr.ITransitConnection;
+import com.pps.core.message.IMessageReadable;
+import com.pps.core.player.IPlayer;
+
+import $ctlImport;
+
+#foreach( $import in $importList )
+import $import;
+#end
+
+/**
+ * 
+ * $comment
+ * @author MessageGenerator
+ *
+ */
+public final class $className implements IMessageReadable, ITransitConnection {
+	
+	@Override
+	public void handle(IPlayer player) throws Exception {
+		
+	}
+
+	@Override
+	public int getTraceId() {
+		return 0;
+	}
+
+	@Override
+	public void read(ByteBuffer buffer) throws Exception {
+		
+	}
+
+	@Override
+	public void create(TransitSession session) {
+		${ctlName}.${method}(session);
+	}
+	
+	@Override
+	public void clear() {
+		${ctlName}.clear();
+	}
+}

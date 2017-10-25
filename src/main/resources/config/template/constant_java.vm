@@ -1,0 +1,22 @@
+package ${package};
+
+/**
+ * 
+ * $comment
+ * @author MessageGenerator
+ *
+ */
+public class $className {
+
+#foreach( $prop in $propList )
+	/**
+	 * $prop.comment
+	 */
+#if($prop.type == "String")
+	public final static $prop.type $prop.id = "${prop.value}";
+#else
+	public final static $prop.type $prop.id = ${prop.value};
+#end		
+#end
+
+}

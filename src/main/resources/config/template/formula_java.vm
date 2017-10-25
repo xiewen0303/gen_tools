@@ -1,0 +1,22 @@
+package com.benniu.game.util;
+
+/**
+ * 公式工具类
+ * @author xiewen
+ */
+public final class FormulaUtil {
+	
+#foreach( $functionData in $functionDatas )
+	/**
+	 * $functionData.remarks
+	#foreach( $parameterDesc in $functionData.parameterDescs )
+ * @param $parameterDesc
+	#end
+ * @return
+	 */
+	public static int ${functionData.name}(${functionData.paramStr}) {
+		return (int)Math.round((${functionData.formulaInfo}));
+	}
+
+#end
+}

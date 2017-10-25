@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" 
+	"http://www.ibatis.com/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="$clazzName">
+	<typeAlias alias="${alias}" type="db.ibatis.bean.${clazzName}"/> 
+	<resultMap id="result" class="${alias}">
+#foreach($prop in $propList)
+		    <result property="$prop.propName" column="$prop.columName"/>
+#end
+	</resultMap>
+   
+   
+	<insert id="insert" parameterClass="db.ibatis.bean.${clazzName}">
+			insert into $tName
+			(#set($i = 0)#foreach($prop in $propList)#set($i = $i+1) `$prop.columName` #if($i != $propList.size()),#end#end)
+			values 
+			(#set($j = 0) #foreach($prop in $propList) #set($j = $j+1) #${prop.propName}# #if($j != $propList.size()),#end#end)
+			<!--
+			<selectKey resultClass="db.ibatis.bean.${clazzName}">  
+				select * from $tName where id = LAST_INSERT_ID()
+			</selectKey>
+			-->
+	</insert>
+
+	<update id="update" parameterClass="db.ibatis.bean.${clazzName}">
+		UPDATE `$tName` SET 
+#set($m = 0)
+#foreach($prop in $propList) 
+#set($m = $m +1)
+		     `$prop.columName` = #${prop.propName}# #if($m != $propList.size()),#end
+
+#end
+		WHERE 1=1 #foreach($pKey in $primaryKeys) and ${pKey.columName}=#${pKey.propName}#  #end;
+	</update>   
+
+	<delete id="delete">
+		delete from `$tName` where 1=1
+#foreach($pKey in $primaryKeys)
+		and ${pKey.columName}=#${pKey.propName}# 
+#end 
+	</delete>
+
+	<select id="getByPk" remapResults="true" resultMap="result">
+		select * from `$tName` where 1=1
+#foreach($pKey in $primaryKeys)
+		and ${pKey.columName}=#${pKey.propName}# 
+#end  
+	</select> 
+    
+    <select id="getListByCondition" remapResults="true"
+		parameterClass="java.util.Map" resultMap="result">
+		select * from `$tName` $condition$
+	</select>
+</sqlMap>

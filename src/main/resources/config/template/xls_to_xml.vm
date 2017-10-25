@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans>
+#foreach( $data in $datas )
+	<bean #foreach($key in  $data.keySet() )$key="$data.get($key)" #end/>
+#end
+</beans>

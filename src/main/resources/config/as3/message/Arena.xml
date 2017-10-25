@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<controllers >
+<controller type="ArenaCtl" packageServer="com.benniu.game.service.arena" packageClient="ghostcoming.protocol" moduleName="arena" comment="竞技场" >
+	
+	
+	
+	<message id="CS_ARENA_RANKING" type="CSArenaRanking" method="arenaRankings" comment="排行榜">
+		<property id="pageCount" type="int" comment="第几页" />
+	</message>
+
+	<message id="SC_ARENA_RANKING" type="SCArenaRanking" method="" comment="排行榜" >
+		<property id="pageCount" type="int" comment="第几页" />
+		<property id="pageMaxSize" type="int" comment="总页数" />
+		<array id="arenaRankVos" type="com.benniu.game.service.arena.ArenaRankVo" client="ghostcoming.protocol.vo.ArenaRankVo" comment="排行榜信息" >
+		 	<property id="targetId" type="String" comment="目标Id" />
+			<property id="rank" type="int" comment="名次" />
+			<property id="heroName" type="String" comment="角色名字" />
+			<property id="awardScore" type="int" comment="可领取积分" />
+			<property id="awardGold" type="int" comment="可领取金币" />
+			<array id="fightPosition" type="String" comment="阵容信息" />
+		</array>
+	</message>
+	
+	
+	<message id="CS_ARENA_OPEN" type="CSArenaOpen" method="openArena" comment="打开竞技场阵容，或者换一批新的">
+	</message>
+
+	<message id="SC_ARENA_OPEN" type="SCArenaOpen" method="" comment="打开竞技场阵容，或者换一批新的" >
+	 	<property id="selfRank" type="int" comment="自己的竞技场排名" />
+		<property id="fightCount" type="int" comment="剩余挑战次数" />
+		<property id="awardGold" type="int" comment="可领取金币" />
+		<property id="awardScore" type="int" comment="可领取积分" />
+		<property id="time" type="int" comment="冷却时间(如果没有就为0)" />
+		<array id="arenaRankVos" type="com.benniu.game.service.arena.ArenaRankVo" client="ghostcoming.protocol.vo.ArenaRankVo" comment="可战斗的玩家信息" >
+			<property id="targetId" type="String" comment="目标Id" />
+			<property id="rank" type="int" comment="名次" />
+			<property id="heroName" type="String" comment="角色名字" />
+			<property id="awardScore" type="int" comment="可领取积分" />
+			<property id="awardGold" type="int" comment="可领取金币" />
+			<property id="diamondAward" type="int" comment="可以获得的钻石 "/>
+			<array id="fightPosition" type="String" comment="阵容信息" />
+		</array>
+	</message>
+	
+	<message id="CS_ARENA_ADDCOUNT" type="CSArenaAddCount" method="arenaAddCount" comment="增加挑战次数">
+	</message>
+
+	<message id="SC_ARENA_ADDCOUNT" type="SCArenaAddCount" method="" comment="增加挑战次数" >
+		 <property id="flag" type="int" comment="标识" />
+	</message>
+	
+	<message id="CS_ARENA_FIGHT" type="CSArenaFight" method="arenaFight" comment="挑战">
+		 <property id="targetPkId" type="String" comment="挑战目标" />
+	</message>
+
+	<message id="SC_ARENA_FIGHT" type="SCArenaFight" method="" comment="挑战" >
+		 <property id="code" type="int" comment="提示信息" />
+		 <property id="isWin" type="boolean" comment="是否胜利" />
+		 <property id="awardGold" type="int" comment="胜利后获得的金币奖励" />
+		 <property id="fightReportId" type="String" comment="战报ID" />
+	</message>
+	
+	
+	<message id="CS_FIGHT_SPECIAL" type="CSFightSpecial" method="fightSpecial" comment="为pvp复仇或者竞技场复仇开放">
+		<property id="mailId" type="String" comment="邮件Id" />
+	</message>
+
+	<message id="SC_FIGHT_SPECIAL" type="SCFightSpecial" method="" comment="为pvp复仇或者竞技场复仇开放" >
+		 <property id="flagCode" type="int" comment="提示信息" />
+		 <property id="mailId" type="String" comment="邮件Id" />
+		 <property id="data" type="int" comment="状态" />
+		 <property id="fightReportId" type="String" comment="战报Id" />
+		 <property id="mailType" type="int" comment="邮件类型" />
+		 <property id="arenaRank" type="int" comment="上升到多少名次" />
+	</message>
+	 
+</controller>
+</controllers>

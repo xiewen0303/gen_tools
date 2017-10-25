@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<controllers >
+<controller type="DayRankCtl" packageServer="com.benniu.game.service.dayrank" packageClient="ghostcoming.protocol" moduleName="dayRank" comment="每日排行" >
+			
+	<message id="CS_OPEN_DAYRANK" type="CSOpenDayRank" method="openDayRank" comment="打开每日排行">
+		<property id="type" type="int" comment="类型" />
+	</message>
+
+	<message id="SC_OPEN_DAYRANK" type="SCOpenDayRank" method="" comment="打开每日排行" >
+		<property id="type" type="int" comment="类型" />
+		<property id="selfRank" type="int" comment="自己当前名次" />
+		<array id="dayRankVos" type="com.benniu.game.service.dayrank.DayRankVo" client="ghostcoming.protocol.vo.DayRankVo" comment="每日排行信息" >
+		 	<property id="nickName" type="String" comment="玩家昵称" />
+			<property id="rank" type="int" comment="当前名次" />
+			<property id="score" type="int" comment="分数" />
+			<property id="awardsStr" type="String" comment="奖励信息(json类型的key = value)" />
+		</array>
+	</message>
+	
+	
+	<message id="CS_OPEN_DAYRANK_FLAG" type="CSOpenDayRankFlag" method="openDayRankFlag" comment="打开每日排行提示">
+	</message>
+
+	<message id="SC_OPEN_DAYRANK_FLAG" type="SCOpenDayRankFlag" method="" comment="打开每日排行提示" >
+		<array id="types" type="int" comment="名次有所上升时提示" />
+	</message>
+	 
+</controller>
+</controllers>

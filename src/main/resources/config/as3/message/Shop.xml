@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<controllers >
+<controller type="ShopCtl" packageServer="com.benniu.game.service.shop" packageClient="ghostcoming.protocol" moduleName="shop" comment="商城" >
+	
+	
+	<message id="CS_SHOP_LIST" type="CSShopList" method="getShopList" comment="商城列表">
+		<property id="type" type="int" comment="1为金币、2为钻石、3为竞技场积分" />
+	</message>
+
+	<message id="SC_SHOP_LIST" type="SCShopList" method="" comment="商城列表" >
+		<property id="type" type="int" comment="1为金币、2为钻石、3为竞技场积分" />
+		<array id="shopList" type="com.benniu.game.service.shop.ShopGoodsVo" client="ghostcoming.protocol.vo.ShopGoodsVo" comment="商品信息" >
+	  		<property id="id" type="int" comment="商城配置Id" />
+	  		<property id="itemId" type="int" comment="道具Id" />
+			<property id="count" type="int" comment="每次购买可以获得的道具数量" />
+			<property id="shopCount" type="int" comment="已经购买次数" />
+			<property id="maxShopCount" type="int" comment="最多可购买次数" />
+			<property id="price" type="int" comment="价格" />
+		</array>
+	</message>
+	
+	<message id="CS_SHOP_BUY" type="CSShopBuy" method="buy" comment="购买道具">
+		<property id="id" type="int" comment="商城配置Id" />
+	</message>
+
+	<message id="SC_SHOP_BUY" type="SCShopBuy" method="" comment="购买道具结果返回" >
+	  	<property id="flagCode" type="int" comment="是否成功code码" />
+	  	<property id="id" type="int" comment="商城配置Id" />
+	  	<property id="count" type="int" comment="已购买次数" />
+	</message>
+	 
+</controller>
+</controllers>

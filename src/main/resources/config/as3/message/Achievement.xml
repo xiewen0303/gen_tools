@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<controllers >
+<controller type="AchievementCtl" packageServer="com.benniu.game.service.achievement" packageClient="ghostcoming.protocol" moduleName="achievement" comment="成就" >
+			
+	<message id="CS_OPEN_ACHIEVEMENT" type="CSOpenAchievement" method="openAchievement" comment="打开成就面板">
+	</message>
+
+	<message id="SC_OPEN_ACHIEVEMENT" type="SCOpenAchievement" method="" comment="打开成就面板" >
+		<array id="achievements" type="com.benniu.game.service.achievement.AchievementVo" client="ghostcoming.protocol.vo.AchievementVo" comment="成就面板信息" >
+		 	<property id="achievementId" type="int" comment="成就Id" />
+			<property id="state" type="int" comment="状态(1:已完成,2:未完成)" />
+		</array>
+	</message>
+	
+	
+	<message id="CS_ACHIEVEMENT_AWARD" type="CSAchievementAward" method="getAchievementAward" comment="领取成就奖励">
+		<property id="achievementId" type="int" comment="成就Id" />
+	</message>
+
+	<message id="SC_ACHIEVEMENT_AWARD" type="SCAchievementAward" method="" comment="领取成就奖励" >
+		 <property id="achievementId" type="int" comment="成就Id" />
+		 <property id="flagCode" type="int" comment="提示信息" />
+		 <object id="nextAchievement" type="com.benniu.game.service.achievement.AchievementVo" client="ghostcoming.protocol.vo.AchievementVo" comment="下一个成就状态" >
+		 	<property id="achievementId" type="int" comment="成就Id" />
+			<property id="state" type="int" comment="状态(1:已完成,2:未完成,3:已领取)" />
+		</object>
+	</message>
+	 
+</controller>
+</controllers>

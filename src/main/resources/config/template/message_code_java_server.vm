@@ -1,0 +1,37 @@
+package ${package};
+
+import com.benniu.game.message.AbstractReadable;
+#foreach ($import in $importList)
+#if( $import.contains("CS") || $import.contains("BS"))
+import ${import};
+#end
+#end
+
+/**
+ * @author MessageGenerator
+ */
+public class MessageCode {
+
+	public final static int BASE_CODE = 1000;
+	public final static int CS_INNER_LOGIN = 888;
+	public final static int SC_INNER_LOGIN = 666;
+	
+#foreach ($data in $codeSet)
+	public final static int $data.codeKey = ${data.codeValue};
+#end
+
+	public static AbstractReadable createMessageByCode(int code) {
+		switch(code){
+		case CS_INNER_LOGIN:
+			return null;	
+#foreach ($data in $codeSet)
+#if( $data.codeKey.startsWith("CS")||$data.codeKey.startsWith("BS"))
+		case ${data.codeKey}:
+			return new ${data.clzName}();
+#end
+#end
+		default:
+			return null;
+		}  
+	}
+}
